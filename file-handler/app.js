@@ -16,6 +16,7 @@ app.post('/api/upload', multipartMiddleware, (req, res) => {
     res.json({
         'message': 'File uploaded succesfully.'
     });
+    console.log(`File uploaded`);
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

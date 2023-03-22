@@ -1,49 +1,73 @@
-<div class="mainContainer">
-  <div class="content">
-    <div class="header">
-      <h1>Angular File Upload</h1>
+<div class="formbold-main-wrapper">
+  <div class="formbold-form-wrapper">
+    <div class="formbold-mb-5">
+      <h1 style="font-size: x-large">GEDStorm</h1>
     </div>
-    <div class="container">
-      <div class="row margin25">
-        <div class="col-md-4"></div>
-        <div class="col-md-4">
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text upload" id="btnUpload">Upload</span>
+
+    <div class="mb-6 pt-4">
+      <label class="formbold-form-label formbold-form-label-2">
+        Upload File
+      </label>
+
+      <div class="formbold-mb-5 formbold-file-input">
+        <form>
+          <form
+            action="/api/upload"
+            method="post"
+            enctype="multipart/form-data"
+          >
+            <input
+              type="file"
+              name="file"
+              id="file"
+              (change)="fileChange($event)"
+            />
+          </form>
+          <label for="file">
+            <div>
+              <span class="formbold-drop-file"> Drop files here </span>
+              <span class="formbold-or"> Or </span>
+              <span class="formbold-browse"> Browse </span>
             </div>
-            <div class="custom-file">
-              <form
-                action="/api/upload"
-                method="post"
-                enctype="multipart/form-data"
-              >
-                <input
-                  type="file"
-                  class="custom-file-input"
-                  id="inputGroupFile01"
-                  aria-describedby="inputGroupFileAddon01"
-                />
-              </form>
-              <label class="custom-file-label" for="inputGroupFile01"
-                >Choose file</label
-              >
-              <input
-                type="file"
-                class="custom-file-input"
-                id="inputGroupFile01"
-                (change)="fileChange($event)"
-                aria-describedby="inputGroupFileAddon01"
-              />
-              <span
-                class="input-group-text upload"
-                (click)="upload()"
-                id="btnUpload"
-                >Upload</span
-              >
+          </label>
+          <div
+            *ngIf="this.uploadedFiles.length > 0"
+            class="formbold-file-list formbold-mb-5 namechecker"
+          >
+            <div class="formbold-file-item">
+              <span class="formbold-file-name">
+                {{ this.uploadedFiles[0].name }}
+              </span>
+              <button>
+                <svg
+                  width="10"
+                  height="10"
+                  viewBox="0 0 10 10"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M0.279337 0.279338C0.651787 -0.0931121 1.25565 -0.0931121 1.6281 0.279338L9.72066 8.3719C10.0931 8.74435 10.0931 9.34821 9.72066 9.72066C9.34821 10.0931 8.74435 10.0931 8.3719 9.72066L0.279337 1.6281C-0.0931125 1.25565 -0.0931125 0.651788 0.279337 0.279338Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M0.279337 9.72066C-0.0931125 9.34821 -0.0931125 8.74435 0.279337 8.3719L8.3719 0.279338C8.74435 -0.0931127 9.34821 -0.0931123 9.72066 0.279338C10.0931 0.651787 10.0931 1.25565 9.72066 1.6281L1.6281 9.72066C1.25565 10.0931 0.651787 10.0931 0.279337 9.72066Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </button>
             </div>
           </div>
-        </div>
-        <div class="col-md-4"></div>
+          <div>
+            <button class="formbold-btn w-full subcheck" (click)="upload()">
+              Send File
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
