@@ -10,13 +10,9 @@ export class AppComponent implements OnInit {
 
   uploadedFiles: Array<File> = [];
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient) { }
 
-  }
-
-  ngOnInit() {
-
-  }
+  ngOnInit() { }
 
   fileChange(element: any) {
     this.uploadedFiles = element.target.files;
