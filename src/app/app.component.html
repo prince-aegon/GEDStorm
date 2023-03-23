@@ -68,6 +68,28 @@
             </button>
           </div>
         </form>
+        <div *ngIf="this.uploadStatus === 200" style="color: green">
+          Success
+        </div>
+        <div
+          *ngIf="this.uploadStatus === 1000 && this.uploadStatus !== 0"
+          style="color: purple"
+        >
+          Select a file to send!!
+        </div>
+        <div
+          *ngIf="
+            this.uploadStatus !== 200 &&
+            this.uploadStatus !== 0 &&
+            this.uploadStatus !== 1000
+          "
+          style="color: red"
+        >
+          Failed : Error [{{ this.uploadStatus }}]
+        </div>
+        <div *ngFor="let line of this.GEDCOMData">
+          {{ line.data }}
+        </div>
       </div>
     </div>
   </div>
