@@ -1,4 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  QueryList,
+  Renderer2,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import GEDCOM from '../../parser.json';
 @Component({
@@ -7,16 +15,31 @@ import GEDCOM from '../../parser.json';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
+  // @ViewChildren('messages')
+  // messages!: QueryList<any>;
+  // @ViewChild('content')
+  // content!: ElementRef;
   uploadedFiles: Array<File> = [];
   button: any;
   uploadStatus: any = 0;
   GEDCOMData: any = GEDCOM;
-  constructor(private http: HttpClient) {}
+  inputValue: any;
+  constructor(private http: HttpClient, private renderer: Renderer2) {}
 
   ngOnInit() {
     this.uploadStatus = 0;
     /* TODO document why this method 'ngOnInit' is empty */
   }
+  // ngAfterViewInit() {
+  //   this.scrollToBottom();
+  //   this.messages.changes.subscribe(this.scrollToBottom);
+  // }
+  // scrollToBottom = () => {
+  //   try {
+  //     this.content.nativeElement.scrollTop =
+  //       this.content.nativeElement.scrollHeight;
+  //   } catch (err) {}
+  // };
 
   fileChange(element: any) {
     this.uploadedFiles = element.target.files;
@@ -49,12 +72,19 @@ export class AppComponent implements OnInit {
   nextStep() {
     console.log(this.GEDCOMData.length);
 
-    // for (let line of GEDCOMData) {
-    //   console.log(line);
-    // }
     console.log('checker12z');
     let fs = require('fs');
     let files = fs.readdir();
     console.log(files);
+  }
+
+  all_button() {
+    this.inputValue = this.GEDCOMData.length;
+    setTimeout(() => {
+      // scroll to the bottom of the page
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }, 100);
+
+    // this.scrollToBottom();
   }
 }

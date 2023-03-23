@@ -5,8 +5,12 @@
 #include <vector>
 using json = nlohmann::json;
 
+using namespace std;
+
 int main()
 {
+
+    // get the uploaded file details from data.json
     std::ifstream f("file-handler/data.json");
     json data = json::parse(f);
     std::string filename = "";
@@ -25,6 +29,8 @@ int main()
             {
                 for (auto &subitem : item.items())
                 {
+
+                    // get the file name parameter
                     if (subitem.key() == "originalFilename")
                     {
                         filename = subitem.value();
@@ -43,6 +49,8 @@ int main()
 
     std::cout << "Filename : " << filename << std::endl;
 
+    // read the file based on the filename recieved above
+
     std::ifstream file_in("file-handler/uploads/" + filename);
     int iter = 0;
     std::vector<std::string> ged;
@@ -54,12 +62,14 @@ int main()
         getline(file_in, text);
         ged.push_back(text);
         iter++;
-        if (iter == 6)
+        if (iter == 21)
             break;
     }
 
+    // write the parsed output to parser.json file
+
     json result = json::array();
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < 20; i++)
     {
         json j = {
             {"id", i},
@@ -72,38 +82,6 @@ int main()
         f << result;
     }
 
-    // std::ifstream f1("parser.json");
-    // json data1 = json::parse(f1);
-
-    // // create a new object to be added to the "school" array
-    // json new_object = {{"name", "ABC School"}, {"date", "2022"}};
-
-    // // add the new object to the "school" array
-    // data1["school"].push_back(new_object);
-
-    // // write the updated JSON object to the file
-    // std::ofstream out1("parser.json");
-
-    // // add a new string to the existing JSON object
-    // data1["new_string"] = "hello world";
-
-    // // write the updated JSON object to the file
-    // out1 << data;
-
-    // json result = json::array();
-    // for (int i = 0; i < 4; i++)
-    // {
-    //     json j = {
-    //         {"id", i},
-    //         {"qty", i},
-    //         {"price", i}};
-    //     result.push_back(j);
-    // }
-
-    // {
-    //     std::ofstream f("parser.json", std::ios_base::trunc | std::ios_base::out);
-    //     f << result;
-    // }
     std::cout << "checker12 ";
     return 0;
 }

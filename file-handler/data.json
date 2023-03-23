@@ -1,1 +1,1 @@
-{"uploads":[{"fieldName":"uploads[]","originalFilename":"file.py","path":"uploads/file.py","headers":{"content-disposition":"form-data; name=\"uploads[]\"; filename=\"file.py\"","content-type":"text/x-python-script"},"size":915,"name":"file.py","type":"text/x-python-script"}]}
+{"uploads":[{"fieldName":"uploads[]","originalFilename":"tsars.ged","path":"uploads/tsars.ged","headers":{"content-disposition":"form-data; name=\"uploads[]\"; filename=\"tsars.ged\"","content-type":"application/octet-stream"},"size":5591,"name":"tsars.ged","type":"application/octet-stream"}]}
