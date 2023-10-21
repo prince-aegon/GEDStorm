@@ -2,14 +2,14 @@
     "uploads": [
         {
             "fieldName": "uploads[]",
-            "originalFilename": "Basic1.ged",
-            "path": "uploads\\GmwQiDIKBRKogDwqv4Hvbuju.ged",
+            "originalFilename": "Shakespeare.ged",
+            "path": "uploads\\9-P-9pOM9vWfY2b1kbufNVoc.ged",
             "headers": {
                 "content-disposition": "form-data; name=\"uploads[]\"; filename=\"Basic1.ged\"",
                 "content-type": "application/octet-stream"
             },
             "size": 1981,
-            "name": "Basic1.ged",
+            "name": "Shakespeare.ged",
             "type": "application/octet-stream"
         }
     ]

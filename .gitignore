@@ -45,3 +45,8 @@ Thumbs.db
 node_modules
 architecture.md
 file-handler/uploads
+test_*
+sqlite3*
+*.ged
+*.exe
+json.hpp

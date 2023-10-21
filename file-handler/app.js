@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const bodyParser = require("body-parser");
+var cors = require("cors");
 const multipart = require("connect-multiparty");
 const fs = require("fs");
 const { exec } = require("child_process");
@@ -18,6 +19,7 @@ app.use(
     extended: true,
   })
 );
+app.use(cors());
 
 app.post("/api/upload", multipartMiddleware, (req, res) => {
   if (res.statusCode === 200) {
@@ -53,6 +55,11 @@ app.get("/api/upload", (req, res) => {
   res.json({
     message: "hello",
   });
+});
+
+app.get("/datapoint001", (req, res) => {
+  let data = "hello world";
+  res.send(JSON.stringify(data));
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

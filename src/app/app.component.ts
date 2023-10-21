@@ -1,24 +1,18 @@
 import {
   Component,
-  ElementRef,
   OnInit,
-  QueryList,
   Renderer2,
-  ViewChild,
-  ViewChildren,
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import GEDCOM from '../../parser.json';
+import { Observable } from 'rxjs';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  // @ViewChildren('messages')
-  // messages!: QueryList<any>;
-  // @ViewChild('content')
-  // content!: ElementRef;
+  readonly BASE_URL: string = 'http://localhost:3000';
   uploadedFiles: Array<File> = [];
   button: any;
   uploadStatus: any = 0;
@@ -28,18 +22,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.uploadStatus = 0;
-    /* TODO document why this method 'ngOnInit' is empty */
   }
-  // ngAfterViewInit() {
-  //   this.scrollToBottom();
-  //   this.messages.changes.subscribe(this.scrollToBottom);
-  // }
-  // scrollToBottom = () => {
-  //   try {
-  //     this.content.nativeElement.scrollTop =
-  //       this.content.nativeElement.scrollHeight;
-  //   } catch (err) {}
-  // };
 
   fileChange(element: any) {
     this.uploadedFiles = element.target.files;
@@ -82,10 +65,13 @@ export class AppComponent implements OnInit {
   all_button() {
     this.inputValue = this.GEDCOMData.length;
     setTimeout(() => {
-      // scroll to the bottom of the page
       window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }, 100);
-
-    // this.scrollToBottom();
   }
+  fetchdemoData() {
+    this.http.get(this.BASE_URL + '/datapoint001').subscribe((data: any) => {
+      console.log(data);
+    });
+  }
+  
 }

@@ -24,6 +24,13 @@ Angular - src
     1. app.component.ts - handles the upload files
         calls post req on new file
 
+Database:
+
+1. download: https://www.sqlite.org/2023/sqlite-amalgamation-3430200.zip
+2. extract and compile the c code
+3. put the header and object file in project folder
+4. run parser.cpp file using : g++ parser.cpp sqlite3.o -o parser
+
 points to remember:
 
 1. 
@@ -35,3 +42,7 @@ to tsconfig.json
 2. run angular with $ ng serve --proxy-config proxy.conf.json
 3. run node with nodemon app.js
 4. run npm install on file-handler for node and in root for angular
+5. run this for cors npm install --save cors
+6. for nlohmann download json.hpp from : https://github.com/nlohmann/json/blob/develop/single_include/nlohmann/json.hpp
+ and put in project folder
+ 
