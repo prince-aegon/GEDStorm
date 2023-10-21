@@ -1,0 +1,37 @@
+Backend:
+
+node.js - file-handler
+    1. /uploads - stores the files uploaded from frontend
+    2. app.js   - contains the backend code
+        a. handles uploaded file
+        b. writes info of the file to data.json
+        c. executes the c++ executable
+    3. data.json - stores info about the last uploaded file like name, path, etc.
+
+c++
+    1. parser.cpp - contains the main code
+        a. extracts file info from data.json in node folder
+        b. finds the file in /uploads folder
+        c. extracts data from the file
+        d. stores data into the parser.json file
+    2. parser.exe - the executable file to be run
+    3. parser.json - executable stores the info into the json file
+
+
+Frontend:
+
+Angular - src
+    1. app.component.ts - handles the upload files
+        calls post req on new file
+
+points to remember:
+
+1. 
+add: 
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true
+to tsconfig.json
+
+2. run angular with $ ng serve --proxy-config proxy.conf.json
+3. run node with nodemon app.js
+4. run npm install on file-handler for node and in root for angular

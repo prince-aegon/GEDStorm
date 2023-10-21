@@ -63,6 +63,7 @@ export class AppComponent implements OnInit {
           },
           (error) => {
             console.log(error.status);
+            console.log('response received is ', error.status);
             this.uploadStatus = error.status;
           }
         );

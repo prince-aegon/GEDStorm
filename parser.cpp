@@ -1,6 +1,6 @@
 #include <fstream>
 #include <iostream>
-#include <nlohmann/json.hpp>
+#include "json.hpp"
 #include <string>
 #include <vector>
 using json = nlohmann::json;
@@ -31,9 +31,10 @@ int main()
                 {
 
                     // get the file name parameter
-                    if (subitem.key() == "originalFilename")
+                    if (subitem.key() == "path")
                     {
                         filename = subitem.value();
+                        filename = filename.substr(8);
                     }
                     std::cout << subitem.key() << " - " << subitem.value() << " | ";
                 }
@@ -65,6 +66,8 @@ int main()
         if (iter == 21)
             break;
     }
+    std::cout << ged[0] << endl;
+    std::cout << ged[1] << endl;
 
     // write the parsed output to parser.json file
 

@@ -1,1 +1,16 @@
-{"uploads":[{"fieldName":"uploads[]","originalFilename":"tsars.ged","path":"uploads/tsars.ged","headers":{"content-disposition":"form-data; name=\"uploads[]\"; filename=\"tsars.ged\"","content-type":"application/octet-stream"},"size":5591,"name":"tsars.ged","type":"application/octet-stream"}]}
+{
+    "uploads": [
+        {
+            "fieldName": "uploads[]",
+            "originalFilename": "Basic1.ged",
+            "path": "uploads\\GmwQiDIKBRKogDwqv4Hvbuju.ged",
+            "headers": {
+                "content-disposition": "form-data; name=\"uploads[]\"; filename=\"Basic1.ged\"",
+                "content-type": "application/octet-stream"
+            },
+            "size": 1981,
+            "name": "Basic1.ged",
+            "type": "application/octet-stream"
+        }
+    ]
+}
