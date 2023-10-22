@@ -4,21 +4,32 @@ import {
   Renderer2,
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-// import GEDCOM from '../../parser.json';
-import { Observable } from 'rxjs';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
+
 export class AppComponent implements OnInit {
+
+  individualForm: FormGroup;    
   readonly BASE_URL: string = 'http://localhost:3000';
+  selectedOption: string = 'option1';
   uploadedFiles: Array<File> = [];
   button: any;
   uploadStatus: any = 0;
   GEDCOMData: any = {};
+  IndividualData: any;
   inputValue: any;
-  constructor(private http: HttpClient, private renderer: Renderer2) {}
+  constructor(private http: HttpClient, private renderer: Renderer2, private formBuilder: FormBuilder) {
+    // Define form controls and validators
+    this.individualForm = this.formBuilder.group({
+      firstname: ['', Validators.required],
+      lastname: ['', Validators.required],
+    });
+  }
 
   ngOnInit() {
     this.uploadStatus = 0;
@@ -54,7 +65,6 @@ export class AppComponent implements OnInit {
     setTimeout(() => {
       this.fetchData();
     }, 500);
-
     this.nextStep();
   }
   nextStep() {
@@ -66,11 +76,30 @@ export class AppComponent implements OnInit {
     console.log(files);
   }
 
-  all_button() {
-    this.inputValue = this.GEDCOMData.length;
+  // all_button() {
+  //   this.inputValue = this.GEDCOMData.length;
+  //   setTimeout(() => {
+  //     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  //   }, 100);
+  // }
+  findIndividual(){
+    this.http.post(this.BASE_URL + '/find', this.individualForm.value, {observe: 'response'})
+    .subscribe(
+      (response) => {
+        console.log(response.status);
+        console.log('response received is ', response.headers);
+        this.uploadStatus = response.status;
+      },
+      (error) => {
+        console.log(error.status);
+        console.log('response received is ', error.status);
+        this.uploadStatus = error.status;
+      }
+    );
     setTimeout(() => {
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    }, 100);
+      this.fetchIndividualData();
+    }, 500);
+
   }
   fetchData() {
     const maxRetries = 50; // Maximum number of retries
@@ -99,6 +128,18 @@ export class AppComponent implements OnInit {
   
     fetchInternal(); // Start the initial fetch
   }
-  
-  
+
+  fetchIndividualData() {
+    this.http.get(this.BASE_URL + '/data/individual').subscribe(
+        (data: any) => {
+            console.log('received individual data in angular');
+            this.IndividualData = data;
+            // console.log(this.IndividualData[0]['Name']);
+        },
+        (error: any) => {
+            console.log(error);
+        }
+    );
+}
+
 }

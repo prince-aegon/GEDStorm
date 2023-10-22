@@ -24,6 +24,29 @@ app.use(cors());
 let isParserComplete = 0;
 
 const db = new sqlite3.Database("../database.db");
+var name = "";
+app.post("/find", (req, res) => {
+  const receivedData = req.body;
+  // Process the received data as needed
+  // console.log(receivedData);
+  name = receivedData["firstname"] + " " + receivedData["lastname"];
+  console.log(name);
+  res.status(200).send("Data received and processed.");
+});
+
+app.get("/data/individual", (req, res) => {
+  // Use a parameterized query to prevent SQL injection
+  const query = "SELECT * FROM Individuals WHERE Name = ?";
+
+  db.all(query, [name], (err, rows) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: "Internal Server Error" });
+    } else {
+      res.json(rows);
+    }
+  });
+});
 
 app.post("/api/upload", multipartMiddleware, (req, res) => {
   if (res.statusCode === 200) {

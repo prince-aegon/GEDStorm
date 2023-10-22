@@ -23,6 +23,9 @@ Frontend:
 Angular - src
     1. app.component.ts - handles the upload files
         calls post req on new file
+CSS:
+    https://formbold.com/templates
+
 
 Database:
 

@@ -10,21 +10,99 @@ using json = nlohmann::json;
 using namespace std;
 
 // Define a class to represent an Individual
+class Family;
 class Individual
 {
-public:
+private:
     std::string id;
-    std::string name;
+    std::string name = "";
+    Individual *father;
+    Individual *mother;
+    Family *parent_family = nullptr;
+    std::string parent_family_id = "";
     // You can add more member variables for other individual attributes
-
+public:
     Individual(const std::string &id) : id(id) {}
+
+    std::string getId() const
+    {
+        return id;
+    }
+
+    std::string getName() const
+    {
+        return name;
+    }
+
+    std::string getFamilyId() const
+    {
+        return parent_family_id;
+    }
+
+    Individual *getFather() const
+    {
+        return father;
+    }
 
     void setName(const std::string &newName)
     {
         name = newName;
     }
+    void setFather(Individual *individual)
+    {
+        father = individual;
+    }
+    void setMother(Individual *individual)
+    {
+        mother = individual;
+    }
+    void setFamily(Family *family)
+    {
+        parent_family = family;
+    }
+    void setFamilyId(std::string family_id)
+    {
+        parent_family_id = family_id;
+    }
 
     // Define member functions for other attributes as needed
+};
+
+class Family
+{
+private:
+    std::string id;
+    Individual *husband;
+    Individual *wife;
+    vector<Individual *> children;
+
+public:
+    Family(const std::string &id) : id(id) {}
+
+    std::string getId() const
+    {
+        return id;
+    }
+    Individual *getHusband()
+    {
+        if (husband != nullptr)
+            return husband;
+        else
+            return nullptr;
+    }
+    Individual *getWife()
+    {
+        return wife;
+    }
+
+    void setHusband(Individual *individual)
+    {
+        husband = individual;
+    }
+    void setWife(Individual *individual)
+    {
+        wife = individual;
+    }
 };
 
 // Define a class to represent the GEDCOM parser
@@ -45,9 +123,15 @@ public:
         }
         if (currentIndividual != nullptr)
         {
-            individuals[currentIndividual->id] = currentIndividual;
+            individuals[currentIndividual->getId()] = currentIndividual;
             currentIndividual = nullptr;
         }
+        if (currentFamily != nullptr)
+        {
+            families[currentFamily->getId()] = currentFamily;
+            currentFamily = nullptr;
+        }
+        linkFamilies();
     }
 
     // Get a map of individuals
@@ -59,7 +143,36 @@ public:
 private:
     std::string filePath;
     std::map<std::string, Individual *> individuals;
+    std::map<std::string, Family *> families;
+
     Individual *currentIndividual = nullptr;
+    Family *currentFamily = nullptr;
+    bool individualBlock = false;
+
+    void linkFamilies()
+    {
+        for (auto &rows : individuals)
+        {
+            Individual *individual = rows.second;
+            if (individual->getFamilyId() == "")
+            {
+                individual->setFather(nullptr);
+                individual->setMother(nullptr);
+                continue;
+            }
+            Individual *father = families[individual->getFamilyId()]->getHusband();
+            Individual *mother = families[individual->getFamilyId()]->getWife();
+
+            if (father != nullptr)
+                individual->setFather(families[individual->getFamilyId()]->getHusband());
+            else
+                individual->setFather(nullptr);
+            if (mother != nullptr)
+                individual->setMother(families[individual->getFamilyId()]->getWife());
+            else
+                individual->setMother(nullptr);
+        }
+    }
 
     void parseLine(const std::string &line)
     {
@@ -94,27 +207,63 @@ private:
     // Helper function to parse a single line
     void processGEDCOMRecord(int level, std::string &tag, std::string &value)
     {
-        if (value == "INDI")
+        if (value == "INDI" || value == "FAM")
         {
             std::string temp = tag;
             tag = value;
             value = temp;
         }
+        if (level == 0 and tag != "INDI")
+        {
+            individualBlock = false;
+        }
+
         // Check if the line is an individual (INDI) record
         if (tag == "INDI")
         {
+            individualBlock = true;
             if (currentIndividual != nullptr)
             {
-                individuals[currentIndividual->id] = currentIndividual;
+                individuals[currentIndividual->getId()] = currentIndividual;
                 currentIndividual = nullptr;
             }
             currentIndividual = new Individual(value);
         }
         // Handle other tags like "NAME", "BIRT", etc. to populate individual attributes
-        else if (tag == "NAME" && currentIndividual)
+        else if (currentIndividual && individualBlock)
         {
-            currentIndividual->setName(value);
+            if (tag == "NAME")
+            {
+                value.erase(std::remove(value.begin(), value.end(), '/'), value.end());
+                currentIndividual->setName(value);
+            }
+            else if (tag == "FAMC")
+            {
+                currentIndividual->setFamilyId(value);
+            }
         }
+
+        if (tag == "FAM")
+        {
+            if (currentFamily != nullptr)
+            {
+                families[currentFamily->getId()] = currentFamily;
+                currentFamily = nullptr;
+            }
+            currentFamily = new Family(value);
+        }
+        else if (currentFamily)
+        {
+            if (tag == "HUSB")
+            {
+                currentFamily->setHusband(individuals[value]);
+            }
+            else if (tag == "WIFE")
+            {
+                currentFamily->setWife(individuals[value]);
+            }
+        }
+
         // Add more handlers for other tags as needed
     }
 };
@@ -161,7 +310,7 @@ int main()
         std::cout << "Table deleted successfully." << std::endl;
     }
 
-    const char *createTableSQL = "CREATE TABLE Individuals (ID TEXT PRIMARY KEY, Name TEXT)";
+    const char *createTableSQL = "CREATE TABLE Individuals (ID TEXT PRIMARY KEY, Name TEXT, Father TEXT)";
 
     rc = sqlite3_exec(db, createTableSQL, 0, 0, &errMsg);
     if (rc != SQLITE_OK)
@@ -175,7 +324,7 @@ int main()
     }
 
     // Create the SQL statement for inserting data
-    const char *insertSQL = "INSERT INTO Individuals (ID, Name) VALUES (?, ?)";
+    const char *insertSQL = "INSERT INTO Individuals (ID, Name, Father) VALUES (?, ?, ?)";
     sqlite3_stmt *stmt;
 
     // get the uploaded file details from data.json
@@ -228,7 +377,7 @@ int main()
     for (const auto &entry : individuals)
     {
         const Individual *individual = entry.second;
-        // std::cout << "ID: " << individual->id << ", Name: " << individual->name << std::endl;
+        // std::cout << "ID: " << individual->getName() << ", Name: " << individual->getId() << ", father: " << individual->getFather() << std::endl;
         // Output other individual attributes as needed
         rc = sqlite3_prepare_v2(db, insertSQL, -1, &stmt, 0);
         if (rc != SQLITE_OK)
@@ -238,8 +387,12 @@ int main()
         }
 
         // Bind the ID and Name values to the SQL statement
-        sqlite3_bind_text(stmt, 1, individual->id.c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_text(stmt, 2, individual->name.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmt, 1, individual->getId().c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmt, 2, individual->getName().c_str(), -1, SQLITE_STATIC);
+        if (individual->getFather() != nullptr)
+            sqlite3_bind_text(stmt, 3, individual->getFather()->getName().c_str(), -1, SQLITE_STATIC);
+        else
+            sqlite3_bind_text(stmt, 3, "", -1, SQLITE_STATIC);
 
         // Execute the SQL statement
         rc = sqlite3_step(stmt);
