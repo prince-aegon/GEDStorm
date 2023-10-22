@@ -50,3 +50,4 @@ sqlite3*
 *.ged
 *.exe
 json.hpp
+*.db

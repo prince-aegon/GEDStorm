@@ -44,6 +44,11 @@ public:
         return father;
     }
 
+    Individual *getMother() const
+    {
+        return mother;
+    }
+
     void setName(const std::string &newName)
     {
         name = newName;
@@ -310,7 +315,7 @@ int main()
         std::cout << "Table deleted successfully." << std::endl;
     }
 
-    const char *createTableSQL = "CREATE TABLE Individuals (ID TEXT PRIMARY KEY, Name TEXT, Father TEXT)";
+    const char *createTableSQL = "CREATE TABLE Individuals (ID TEXT PRIMARY KEY, Name TEXT, Father TEXT, Mother TEXT)";
 
     rc = sqlite3_exec(db, createTableSQL, 0, 0, &errMsg);
     if (rc != SQLITE_OK)
@@ -324,7 +329,7 @@ int main()
     }
 
     // Create the SQL statement for inserting data
-    const char *insertSQL = "INSERT INTO Individuals (ID, Name, Father) VALUES (?, ?, ?)";
+    const char *insertSQL = "INSERT INTO Individuals (ID, Name, Father, Mother) VALUES (?, ?, ?, ?)";
     sqlite3_stmt *stmt;
 
     // get the uploaded file details from data.json
@@ -393,6 +398,10 @@ int main()
             sqlite3_bind_text(stmt, 3, individual->getFather()->getName().c_str(), -1, SQLITE_STATIC);
         else
             sqlite3_bind_text(stmt, 3, "", -1, SQLITE_STATIC);
+        if (individual->getMother() != nullptr)
+            sqlite3_bind_text(stmt, 4, individual->getMother()->getName().c_str(), -1, SQLITE_STATIC);
+        else
+            sqlite3_bind_text(stmt, 4, "", -1, SQLITE_STATIC);
 
         // Execute the SQL statement
         rc = sqlite3_step(stmt);

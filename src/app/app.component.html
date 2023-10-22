@@ -125,6 +125,7 @@
               <th scope="col">Id</th>
               <th scope="col">Name</th>
               <th scope="col">Father</th>
+              <th scope="col">Mother</th>
             </tr>
           </thead>
           <tbody>
@@ -133,6 +134,7 @@
                 <th scope="row">{{ i + 1 }}</th>
                 <td>{{ line.Name }}</td>
                 <td>{{ line.Father }}</td>
+                <td>{{ line.Mother }}</td>
               </tr>
             </ng-container>
           </tbody>
@@ -227,7 +229,9 @@
                   </clipPath>
                 </defs>
               </svg>
-              New York, USA
+              <p *ngIf="this.IndividualData">
+                {{ this.IndividualData[0]['Mother'] }}
+              </p>
             </li>
             <li>
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
