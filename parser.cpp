@@ -121,7 +121,7 @@ private:
 
 int main()
 {
-
+    // std::cout << "The cpp file is running..." << std::endl;
     const char *databaseFileName = "database.db";
     if (!std::ifstream(databaseFileName))
     {
@@ -140,13 +140,33 @@ int main()
         std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
         return 1;
     }
+    rc = sqlite3_exec(db, "BEGIN TRANSACTION;", 0, 0, 0);
+
+    if (rc != SQLITE_OK)
+    {
+        std::cerr << "Failed to begin transaction: " << sqlite3_errmsg(db) << std::endl;
+        sqlite3_close(db);
+        return rc;
+    }
+    const char *dropTableSQL = "DROP TABLE IF EXISTS Individuals";
+
+    rc = sqlite3_exec(db, dropTableSQL, 0, 0, &errMsg);
+    if (rc != SQLITE_OK)
+    {
+        std::cerr << "SQL error (delete): " << errMsg << std::endl;
+        sqlite3_free(errMsg);
+    }
+    else
+    {
+        std::cout << "Table deleted successfully." << std::endl;
+    }
 
     const char *createTableSQL = "CREATE TABLE Individuals (ID TEXT PRIMARY KEY, Name TEXT)";
 
     rc = sqlite3_exec(db, createTableSQL, 0, 0, &errMsg);
     if (rc != SQLITE_OK)
     {
-        std::cerr << "SQL error: " << errMsg << std::endl;
+        std::cerr << "SQL error (create): " << errMsg << std::endl;
         sqlite3_free(errMsg);
     }
     else
@@ -213,7 +233,7 @@ int main()
         rc = sqlite3_prepare_v2(db, insertSQL, -1, &stmt, 0);
         if (rc != SQLITE_OK)
         {
-            std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
+            std::cerr << "SQL error (insert): " << sqlite3_errmsg(db) << std::endl;
             continue; // Handle the error as needed
         }
 
@@ -230,9 +250,19 @@ int main()
 
         sqlite3_finalize(stmt); // Finalize the statement
     }
+    rc = sqlite3_exec(db, "COMMIT;", 0, 0, 0);
+
+    if (rc != SQLITE_OK)
+    {
+        std::cerr << "Failed to commit transaction: " << sqlite3_errmsg(db) << std::endl;
+        sqlite3_close(db);
+        return rc;
+    }
+
+    sqlite3_close(db);
 
     // Close the SQLite database
-    sqlite3_close(db);
+    // sqlite3_close(db);
 
     // // read the file based on the filename recieved above
 

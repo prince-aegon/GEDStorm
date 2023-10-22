@@ -1,16 +1,1 @@
-{
-    "uploads": [
-        {
-            "fieldName": "uploads[]",
-            "originalFilename": "Shakespeare.ged",
-            "path": "uploads\\9-P-9pOM9vWfY2b1kbufNVoc.ged",
-            "headers": {
-                "content-disposition": "form-data; name=\"uploads[]\"; filename=\"Basic1.ged\"",
-                "content-type": "application/octet-stream"
-            },
-            "size": 1981,
-            "name": "Shakespeare.ged",
-            "type": "application/octet-stream"
-        }
-    ]
-}
+{"uploads":[{"fieldName":"uploads[]","originalFilename":"ASOIAF.ged","path":"uploads\\XNhdB2Y-Ye-bKWq8FSw4OZU8.ged","headers":{"content-disposition":"form-data; name=\"uploads[]\"; filename=\"ASOIAF.ged\"","content-type":"application/octet-stream"},"size":177593,"name":"ASOIAF.ged","type":"application/octet-stream"}]}
