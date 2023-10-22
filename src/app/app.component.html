@@ -39,7 +39,7 @@
             </div>
           </div>
           <div>
-            <button class="formbold-btn w-full subcheck" (click)="fetchdemoData()">
+            <button class="formbold-btn w-full subcheck" (click)="upload()">
               Send File
             </button>
           </div>
@@ -75,10 +75,10 @@
             </tr>
           </thead>
           <tbody>
-            <ng-container *ngFor="let line of GEDCOMData.slice(0, inputValue)">
+            <ng-container *ngFor="let line of GEDCOMData; let i = index">
               <tr>
-                <th scope="row">{{ line.id + 1 }}</th>
-                <td>{{ line.data }}</td>
+                <th scope="row">{{ i + 1 }}</th>
+                <td>{{ line.Name }}</td>
               </tr>
             </ng-container>
           </tbody>

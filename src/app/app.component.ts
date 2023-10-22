@@ -4,7 +4,7 @@ import {
   Renderer2,
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import GEDCOM from '../../parser.json';
+// import GEDCOM from '../../parser.json';
 import { Observable } from 'rxjs';
 @Component({
   selector: 'app-root',
@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
   uploadedFiles: Array<File> = [];
   button: any;
   uploadStatus: any = 0;
-  GEDCOMData: any = GEDCOM;
+  GEDCOMData: any = {};
   inputValue: any;
   constructor(private http: HttpClient, private renderer: Renderer2) {}
 
@@ -51,6 +51,10 @@ export class AppComponent implements OnInit {
           }
         );
     }
+    setTimeout(() => {
+      this.fetchData();
+    }, 500);
+
     this.nextStep();
   }
   nextStep() {
@@ -68,10 +72,33 @@ export class AppComponent implements OnInit {
       window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }, 100);
   }
-  fetchdemoData() {
-    this.http.get(this.BASE_URL + '/datapoint001').subscribe((data: any) => {
-      console.log(data);
-    });
+  fetchData() {
+    const maxRetries = 50; // Maximum number of retries
+    let retryCount = 0;
+  
+    const fetchInternal = () => {
+      this.http.get(this.BASE_URL + '/data').subscribe(
+        (data: any) => {
+          console.log('recieved data in angular')
+          console.log(data);
+          this.GEDCOMData = data;
+        },
+        (error) => {
+          console.error(error);
+          if (retryCount < maxRetries) {
+            retryCount++;
+            console.log(`Retrying (Attempt ${retryCount})...`);
+            // Retry after a delay (you can adjust the delay time as needed)
+            setTimeout(fetchInternal, 100); // Retry after 1 second
+          } else {
+            console.error('Max retries exceeded. Unable to fetch data.');
+          }
+        }
+      );
+    };
+  
+    fetchInternal(); // Start the initial fetch
   }
+  
   
 }
