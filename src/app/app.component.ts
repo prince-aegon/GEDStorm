@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
   button: any;
   uploadStatus: any = 0;
   GEDCOMData: any = {};
+  FamilyData: any = [];
   IndividualData: any;
   inputValue: any;
   constructor(private http: HttpClient, private renderer: Renderer2, private formBuilder: FormBuilder) {
@@ -65,6 +66,9 @@ export class AppComponent implements OnInit {
     setTimeout(() => {
       this.fetchData();
     }, 500);
+    setTimeout(() => {
+      this.fetchFamilyData();
+    }, 500);
     this.nextStep();
   }
   nextStep() {
@@ -99,7 +103,6 @@ export class AppComponent implements OnInit {
     setTimeout(() => {
       this.fetchIndividualData();
     }, 500);
-
   }
   fetchData() {
     const maxRetries = 50; // Maximum number of retries
@@ -111,6 +114,34 @@ export class AppComponent implements OnInit {
           console.log('recieved data in angular')
           console.log(data);
           this.GEDCOMData = data;
+        },
+        (error) => {
+          console.error(error);
+          if (retryCount < maxRetries) {
+            retryCount++;
+            console.log(`Retrying (Attempt ${retryCount})...`);
+            // Retry after a delay (you can adjust the delay time as needed)
+            setTimeout(fetchInternal, 100); // Retry after 1 second
+          } else {
+            console.error('Max retries exceeded. Unable to fetch data.');
+          }
+        }
+      );
+    };
+  
+    fetchInternal(); // Start the initial fetch
+  }
+
+  fetchFamilyData() {
+    const maxRetries = 50; // Maximum number of retries
+    let retryCount = 0;
+  
+    const fetchInternal = () => {
+      this.http.get(this.BASE_URL + '/data/family').subscribe(
+        (data: any) => {
+          console.log('recieved data in angular')
+          console.log(data);
+          this.FamilyData = data;
         },
         (error) => {
           console.error(error);

@@ -121,4 +121,22 @@ app.get("/data", (req, res) => {
   }
 });
 
+app.get("/data/family", (req, res) => {
+  // Query your SQLite table
+  if (isParserComplete == 0) {
+    res.status(500).json({ error: "Processing ... " });
+  } else {
+    const query = "SELECT * FROM Family";
+
+    db.all(query, [], (err, rows) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: "Internal Server Error" });
+      } else {
+        res.json(rows);
+      }
+    });
+  }
+});
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

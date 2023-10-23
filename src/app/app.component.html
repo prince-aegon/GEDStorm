@@ -140,6 +140,28 @@
           </tbody>
         </table>
       </ng-container>
+      <ng-container *ngIf="this.selectedOption == 'option3'">
+        <table class=" table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th scope="col">Id</th>
+              <th scope="col">Husband</th>
+              <th scope="col">Wife</th>
+              <th scope="col">Children</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let line of this.FamilyData; let i = index">
+              <tr>
+                <th scope="row">{{ i + 1 }}</th>
+                <td>{{ line.Husband }}</td>
+                <td>{{ line.Wife }}</td>
+                <td>{{ line.Children }}</td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </ng-container>
 
       <ng-container *ngIf="this.selectedOption == 'option2'">
         <form [formGroup]="individualForm" (ngSubmit)="this.findIndividual()">
