@@ -6,6 +6,7 @@ const sqlite3 = require("sqlite3").verbose();
 var cors = require("cors");
 const multipart = require("connect-multiparty");
 const fs = require("fs");
+const path = require("path");
 const { exec } = require("child_process");
 const controller = new AbortController();
 const { signal } = controller;
@@ -22,6 +23,7 @@ app.use(
 );
 app.use(cors());
 let isParserComplete = 0;
+const folderPath = "D:\\16_Projects\\GEDStorm-New\\file-handler\\uploads";
 
 const db = new sqlite3.Database("../database.db");
 var name = "";
@@ -33,6 +35,31 @@ app.post("/find", (req, res) => {
   console.log(name);
   res.status(200).send("Data received and processed.");
 });
+function clearUploadsFolder() {
+  fs.readdir(folderPath, (err, files) => {
+    if (err) {
+      console.error("Error reading folder:", err);
+      return;
+    }
+
+    if (files.length > 1) {
+      console.log(`Clearing folder because there are ${files.length} files.`);
+
+      // Delete files in the folder
+      files.forEach((file) => {
+        const filePath = path.join(folderPath, file);
+        fs.unlinkSync(filePath);
+        console.log(`Deleted file: ${file}`);
+      });
+
+      console.log("Folder cleared.");
+    } else {
+      console.log("No need to clear the folder.");
+    }
+  });
+}
+
+setInterval(clearUploadsFolder, 120000);
 
 app.get("/data/individual", (req, res) => {
   // Use a parameterized query to prevent SQL injection
